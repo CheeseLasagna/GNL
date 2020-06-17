@@ -6,17 +6,17 @@
 /*   By: tlavelle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/08 13:22:31 by tlavelle          #+#    #+#             */
-/*   Updated: 2020/06/15 14:47:11 by tlavelle         ###   ########.fr       */
+/*   Updated: 2020/06/17 18:33:09 by tlavelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
 char	*proverka(char **ostatok, char **line)
 {
 	char *pointer;
 	char *leaks;
+	int		len;
 
 	pointer = NULL;
 	if (*ostatok)
@@ -26,7 +26,9 @@ char	*proverka(char **ostatok, char **line)
 		{
 			*pointer++ = '\0';
 			*line = ft_strjoin(*line, *ostatok);
-			*ostatok = pointer;
+			//*ostatok = pointer;
+			len = ft_strlen(pointer);
+			*ostatok = ft_memcpy(*ostatok, pointer, len + 1);
 		}
 		else
 		{
@@ -36,17 +38,16 @@ char	*proverka(char **ostatok, char **line)
 		free(leaks);
 	}
 	return (pointer);
-}	
-			 
+}
 
-int	get_next_line(int fd, char **line)
+int		get_next_line(int fd, char **line)
 {
-	char	buffer[BUFFER_SIZE + 1];
-	int		result;
-	char	*endofline;
-	static char *ostatok;
-	char	*leaks;
-	
+	char		buffer[BUFFER_SIZE + 1];
+	int			result;
+	char		*endofline;
+	static char	*ostatok;
+	char		*leaks;
+
 	*line = ft_strdup("");
 	endofline = proverka(&ostatok, line);
 	while (!endofline && (result = read(fd, buffer, BUFFER_SIZE)))
@@ -63,6 +64,7 @@ int	get_next_line(int fd, char **line)
 		*line = ft_strjoin(*line, buffer);
 		free(leaks);
 	}
+	if (endofline == NULL && result == 0)
+		free(*line);
 	return (endofline || result > 0);
 }
-
