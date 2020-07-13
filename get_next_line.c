@@ -6,65 +6,74 @@
 /*   By: tlavelle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/08 13:22:31 by tlavelle          #+#    #+#             */
-/*   Updated: 2020/06/17 18:33:09 by tlavelle         ###   ########.fr       */
+/*   Updated: 2020/07/13 15:57:05 by tlavelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*proverka(char **ostatok, char **line)
+void	add_rem(char **rem, char **line)
 {
-	char *pointer;
-	char *leaks;
+	char	*ptr;
 	int		len;
 
-	pointer = NULL;
-	if (*ostatok)
+	if (*rem)
 	{
-		leaks = *line;
-		if ((pointer = ft_strchr(*ostatok, '\n')))
+		if ((ptr = ft_strchr(*rem, '\n')))
 		{
-			*pointer++ = '\0';
-			*line = ft_strjoin(*line, *ostatok);
-			//*ostatok = pointer;
-			len = ft_strlen(pointer);
-			*ostatok = ft_memcpy(*ostatok, pointer, len + 1);
+			*ptr++ = '\0';
+			*line = ft_strdup(*rem);
+			len = ft_strlen(ptr);
+			*rem = ft_memcpy(*rem, ptr, len + 1);
 		}
 		else
 		{
-			*line = ft_strjoin(*line, *ostatok);
-			free(*ostatok);
+			if (**rem == '\0')
+			{
+				free(*rem);
+				*rem = NULL;
+				return ;
+			}
+			*line = ft_strdup(*rem);
+			free(*rem);
+			*rem = NULL;
 		}
-		free(leaks);
 	}
-	return (pointer);
 }
 
-int		get_next_line(int fd, char **line)
+void	add_line(char **rem, int br, char **line, char *buff)
 {
-	char		buffer[BUFFER_SIZE + 1];
-	int			result;
-	char		*endofline;
-	static char	*ostatok;
-	char		*leaks;
-
-	*line = ft_strdup("");
-	endofline = proverka(&ostatok, line);
-	while (!endofline && (result = read(fd, buffer, BUFFER_SIZE)))
+	char *leaks;
+	
+	buff[br] = '\0';
+	if ((*rem = ft_strchr(buff, '\n')))
 	{
-		if (result == -1)
-			return (result);
-		buffer[result] = '\0';
-		if ((endofline = ft_strchr(buffer, '\n')))
-		{
-			*endofline++ = '\0';
-			ostatok = ft_strdup(endofline);
-		}
+		**rem = '\0';
+		*rem = *rem + 1;
+		*rem = ft_strdup(*rem);
+	}
+	if (*line == NULL)
+		*line = ft_strdup(buff);
+	else
+	{
 		leaks = *line;
-		*line = ft_strjoin(*line, buffer);
+		*line = ft_strjoin(*line, buff);
 		free(leaks);
 	}
-	if (endofline == NULL && result == 0)
-		free(*line);
-	return (endofline || result > 0);
+}
+int		get_next_line(int fd, char **line)
+{
+	char		buff[BUFFER_SIZE + 1];
+	int			byrd;
+	static char	*rem;
+
+	*line = NULL;
+	add_rem(&rem, line);
+	while (!rem && (byrd = read(fd, buff, BUFFER_SIZE)))
+	{
+		if (byrd == -1)
+			return (byrd);
+		add_line(&rem, byrd, line, buff);	
+	}
+	return (rem != NULL || byrd > 0 || *line != NULL);
 }
