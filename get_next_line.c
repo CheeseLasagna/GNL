@@ -6,7 +6,7 @@
 /*   By: tlavelle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/08 13:22:31 by tlavelle          #+#    #+#             */
-/*   Updated: 2020/07/16 13:20:02 by tlavelle         ###   ########.fr       */
+/*   Updated: 2020/07/16 17:44:21 by tlavelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,6 @@ void	add_rem(char **rem, char **line)
 	}
 	else
 	{
-		if (**rem == '\0')
-		{
-			free(*rem);
-			*rem = NULL;
-			*line = ft_strdup("");
-			return ;
-		}
 		*line = ft_strdup(*rem);
 		free(*rem);
 		*rem = NULL;

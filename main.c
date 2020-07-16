@@ -6,7 +6,7 @@
 /*   By: tlavelle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/17 21:09:44 by tlavelle          #+#    #+#             */
-/*   Updated: 2020/07/16 13:22:17 by tlavelle         ###   ########.fr       */
+/*   Updated: 2020/07/16 17:55:25 by tlavelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	main(void)
 	int		i;
 //	int		j = 1;
 
-	fd = open("files/alphabet", O_RDONLY);
+	fd = open("files/gh2", O_RDONLY);
 	while ((i = get_next_line(fd, &line)))
 	{
 		if (i < 0)
@@ -29,7 +29,7 @@ int	main(void)
 		printf("%s\n", line);
 		free(line);
 	}
-	printf("%s\n", line);
+//	printf("%s\n", line);
 	free(line);
 	/*fd = open("half_marge_bottom", O_RDONLY);
 	while ((result = get_next_line(fd, &line)))
